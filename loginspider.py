@@ -1,5 +1,6 @@
 #To run this spider execute the following command in this directory: scrapy runspider loginspider.py
 import scrapy
+from scrapy.shell import inspect_response
 
 
 class LoginSpider(scrapy.Spider):
@@ -11,13 +12,11 @@ class LoginSpider(scrapy.Spider):
 
     def print_p(self, response):
         print("\033[94mPrinting <p> elements\033[0m")
-        #Print all <p> elements on page to try and understand which page I am on
-        for paragraph in response.xpath('//p'):
-            print("----------")
-            print(paragraph.xpath('a').extract())
-            print(paragraph.xpath('a/text()').extract())
+        #Print body
+        print(response.text)
 
     def parse(self, response):
+        print("\033[92mIN PARSE\033[0m")
         request_id = response.css('input[name="request_id"]::attr(value)').extract_first()
         data = {
             'userid_placeholder': self.login_user,
@@ -26,6 +25,6 @@ class LoginSpider(scrapy.Spider):
             'request_id': request_id,
             'username': self.login_user[1:]
         }
-        print("\033[92mPOSTING NOW\033[0m")
         yield scrapy.FormRequest(url='https://www1.up.ac.za/oam/server/auth_cred_submit', formdata=data,
                                  callback=self.print_p)
+

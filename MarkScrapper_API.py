@@ -1,10 +1,13 @@
+from scrapy.crawler import CrawlerProcess
 import loginspider
 
 
-def start_scrape(username, password):
-    # create a scrapy spider and call it.
-    login_spider = loginspider.LoginSpider(username, password)
-    login_spider.start_requests()
-    print(password + " " + username)
+def start_scrape():
+    process = CrawlerProcess({
+        'USER_AGENT': 'Mozilla/4.0 (compatible; MSIE 7.0; Windows NT 5.1)'
+    })
 
-start_scrape("U15029779", "Etienne@92")
+    process.crawl(loginspider.LoginSpider)
+    process.start()
+
+start_scrape()
